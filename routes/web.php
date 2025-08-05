@@ -6,14 +6,14 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\PengumumanController;
 use Illuminate\Support\Facades\Route;
 
-// ---------------- AUTH & SESSION ---------------- //
+//  AUTH dan SESSION  //
 Route::get('/sesi', [SessionController::class, 'index'])->name('login');
 Route::post('/sesi/login', [SessionController::class, 'login']);
 Route::get('/sesi/logout', [SessionController::class, 'logout']);
 Route::get('/sesi/register', [SessionController::class, 'register']);
 Route::post('/sesi/create', [SessionController::class, 'create']);
 
-// ---------------- ROUTES YANG BUTUH LOGIN ---------------- //
+//  ROUTES YANG BUTUH LOGIN--- //
 Route::middleware(['auth'])->group(function () {
 
     // Halaman Umum
@@ -38,7 +38,6 @@ Route::get('/siswa/{id}', [SiswaController::class, 'detail'])->name('siswa.detai
         Route::post('/siswa', [SiswaController::class, 'store'])->name('siswa.store');
     });
 
-   
 
     // Pengumuman
     Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
