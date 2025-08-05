@@ -87,60 +87,60 @@ class SiswaController extends Controller
     }
 
     public function create()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Cegah user menambahkan lebih dari 1 data siswa
-        if (Siswa::where('user_id', $user->id)->exists()) {
-            return redirect()->route('siswa.index')->with('warning', 'Anda sudah mengisi data sebelumnya.');
-        }
-
-        return view('siswa/create');
+    // Hanya batasi jika role-nya 'user'
+    if ($user->role === 'user' && Siswa::where('user_id', $user->id)->exists()) {
+        return redirect()->route('siswa.index')->with('warning', 'Anda sudah mengisi data sebelumnya.');
     }
 
-    public function store(Request $request)
-    {
-        Session::flash('nomer_induk', $request->nomer_induk);
-        Session::flash('nama', $request->nama);
-        Session::flash('alamat', $request->alamat);
+    return view('siswa/create');
+}
 
-        $request->validate([
-            'nomer_induk' => 'required|numeric|unique:siswa,nomer_induk',
-            'nama' => 'required',
-            'alamat' => 'required',
-            'kelas' => 'required',
-            'foto' => 'required|mimes:jpeg,jpg,png,gif'
-        ], [
-            'nomer_induk.required' => 'Nomer Induk Wajib diisi',
-            'nomer_induk.numeric' => 'Nomer Induk harus berupa angka',
-            'nama.required' => 'Nama Wajib diisi',
-            'alamat.required' => 'Alamat Wajib diisi',
-            'foto.required' => 'Silakan masukkan foto',
-            'foto.mimes' => 'Foto hanya boleh JPEG, JPG, PNG, GIF'
-        ]);
+public function store(Request $request)
+{
+    Session::flash('nomer_induk', $request->nomer_induk);
+    Session::flash('nama', $request->nama);
+    Session::flash('alamat', $request->alamat);
 
-        // Upload foto
-        $foto_file = $request->file('foto');
-        $foto_nama = date('ymdhis') . "." . $foto_file->extension();
-        $foto_file->move(public_path('foto'), $foto_nama);
+    $request->validate([
+        'nomer_induk' => 'required|numeric|unique:siswa,nomer_induk',
+        'nama' => 'required',
+        'alamat' => 'required',
+        'kelas' => 'required',
+        'foto' => 'required|mimes:jpeg,jpg,png,gif'
+    ], [
+        'nomer_induk.required' => 'Nomer Induk Wajib diisi',
+        'nomer_induk.numeric' => 'Nomer Induk harus berupa angka',
+        'nama.required' => 'Nama Wajib diisi',
+        'alamat.required' => 'Alamat Wajib diisi',
+        'foto.required' => 'Silakan masukkan foto',
+        'foto.mimes' => 'Foto hanya boleh JPEG, JPG, PNG, GIF'
+    ]);
 
-        // Gunakan user yang sedang login
-        $user = Auth::user();
+    // Upload foto
+    $foto_file = $request->file('foto');
+    $foto_nama = date('ymdhis') . "." . $foto_file->extension();
+    $foto_file->move(public_path('foto'), $foto_nama);
 
-        // Simpan data siswa
-        $data = [
-            'user_id' => $user->id,
-            'nomer_induk' => $request->nomer_induk,
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'kelas' => $request->kelas,
-            'foto' => $foto_nama
-        ];
+    $user = Auth::user();
 
-        Siswa::create($data);
+    // Jika user adalah 'user', simpan user_id miliknya
+    // Jika admin, bisa simpan kosong atau sesuai kebutuhan
+    $data = [
+        'user_id' => $user->role === 'user' ? $user->id : null,
+        'nomer_induk' => $request->nomer_induk,
+        'nama' => $request->nama,
+        'alamat' => $request->alamat,
+        'kelas' => $request->kelas,
+        'foto' => $foto_nama
+    ];
 
-        return redirect('siswa')->with('success', 'Data siswa berhasil ditambahkan.');
-    }
+    Siswa::create($data);
+
+    return redirect('siswa')->with('success', 'Data siswa berhasil ditambahkan.');
+}
 
     public function show(string $id)
     {
