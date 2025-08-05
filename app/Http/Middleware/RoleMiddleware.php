@@ -10,21 +10,19 @@ class RoleMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         // Cek apakah user sudah login
         if (!auth()->check()) {
             return redirect('/sesi')->with('error', 'Silakan login terlebih dahulu');
         }
-        
-        // Cek apakah user memiliki role yang sesuai
-        if (auth()->user()->role !== $role) {
-            abort(403, 'Akses ditolak. Anda tidak memiliki permission untuk halaman ini.');
-        }
-        
+
+        // Cek apakah user memiliki salah satu role yang diperbolehkan
+        // if (!in_array(auth()->user()->role, $roles)) {
+        //     abort(403, 'Akses ditolak. Anda tidak memiliki permission untuk halaman ini.');
+        // }
+
         return $next($request);
     }
 }

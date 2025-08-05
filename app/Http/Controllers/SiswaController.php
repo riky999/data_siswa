@@ -2,36 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\siswa;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use PDF;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 
 class SiswaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-
-   public function chartCanvas()
-{
-    try {
-        // Debug auth user dulu
+    public function chartCanvas()
+    {
         if (!auth()->check()) {
             return redirect()->route('login');
         }
-        
-        // Debug user object
+
         $user = auth()->user();
         if (!$user) {
             return redirect()->route('login');
         }
-        
-        $rawData = \App\Models\Siswa::select('kelas', \DB::raw('count(*) as total'))
+
+        $rawData = Siswa::select('kelas', DB::raw('count(*) as total'))
             ->groupBy('kelas')
             ->get();
 
@@ -39,214 +32,181 @@ class SiswaController extends Controller
         $data = $rawData->pluck('total');
 
         return view('siswa.chart_canvas', compact('labels', 'data'));
-        
-    } catch (\Exception $e) {
-        // Debug error yang sebenarnya
-        dd([
-            'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
     }
-}
-
-
 
     public function cetakPdf(Request $request)
-{
-    $kelas = $request->input('kelas');
+    {
+        $kelas = $request->input('kelas');
+        $query = Siswa::orderBy('nama');
 
-    $query = \App\Models\Siswa::orderBy('nama');
+        if ($kelas) {
+            $query->where('kelas', $kelas);
+        }
 
-    if ($kelas) {
-        $query->where('kelas', $kelas);
+        $data = $query->get();
+        $pdf = PDF::loadView('siswa.pdf', compact('data'))->setPaper('a4', 'portrait');
+        return $pdf->stream('data_siswa.pdf');
     }
 
-    $data = $query->get();
-
-    $pdf = PDF::loadView('siswa.pdf', compact('data'))->setPaper('a4', 'portrait');
-    return $pdf->stream('data_siswa.pdf');
-}
-
-
-
-
-
-
-    // ini untuk mengubah berapa baris tabel
     public function index(Request $request)
-{
-    $cari = $request->input('cari');
-    $kelas = $request->input('kelas');
+    {
+        $cari = $request->input('cari');
+        $kelas = $request->input('kelas');
+        $user = Auth::user();
 
-    $query = \App\Models\Siswa::orderBy('nomer_induk', 'desc');
+        $query = Siswa::orderBy('nomer_induk', 'desc');
 
-    if ($cari) {
-        $query->where('nama', 'like', '%' . $cari . '%');
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        if ($cari) {
+            $query->where('nama', 'like', '%' . $cari . '%');
+        }
+
+        if ($kelas) {
+            $query->where('kelas', $kelas);
+        }
+
+        $data = $query->paginate(5);
+
+        $labels = collect();
+        $jumlah = collect();
+
+        if ($user->role === 'admin') {
+            $chart = DB::table('siswa')
+                ->select('kelas', DB::raw('COUNT(*) as jumlah'))
+                ->groupBy('kelas')
+                ->get();
+
+            $labels = $chart->pluck('kelas');
+            $jumlah = $chart->pluck('jumlah');
+        }
+
+        return view('siswa.index', compact('data', 'labels', 'jumlah'));
     }
 
-    if ($kelas) {
-        $query->where('kelas', $kelas);
-    }
-
-    $data = $query->paginate(5);
-
-    // Chart data (mengelompokkan jumlah siswa per kelas)
-    $chart = DB::table('siswa')
-    ->select('kelas', DB::raw('COUNT(*) as jumlah'))
-    ->groupBy('kelas')
-    ->get();
-
-    $labels = $chart->pluck('kelas');
-    $jumlah = $chart->pluck('jumlah');
-    
-
-
-    return view('siswa.index', compact('data', 'labels', 'jumlah'));
-}
-
-
-
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
+        $user = Auth::user();
+
+        // Cegah user menambahkan lebih dari 1 data siswa
+        if (Siswa::where('user_id', $user->id)->exists()) {
+            return redirect()->route('siswa.index')->with('warning', 'Anda sudah mengisi data sebelumnya.');
+        }
+
         return view('siswa/create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // dd($request->all());
         Session::flash('nomer_induk', $request->nomer_induk);
         Session::flash('nama', $request->nama);
-        session::flash('alamat', $request->alamat);
+        Session::flash('alamat', $request->alamat);
 
         $request->validate([
-            'nomer_induk' => 'required|numeric',
+            'nomer_induk' => 'required|numeric|unique:siswa,nomer_induk',
             'nama' => 'required',
             'alamat' => 'required',
             'kelas' => 'required',
-
             'foto' => 'required|mimes:jpeg,jpg,png,gif'
         ], [
             'nomer_induk.required' => 'Nomer Induk Wajib diisi',
-            'nomer_induk.numeric' => 'Nomer Induk Wajib diisi Dalam Angka',
+            'nomer_induk.numeric' => 'Nomer Induk harus berupa angka',
             'nama.required' => 'Nama Wajib diisi',
             'alamat.required' => 'Alamat Wajib diisi',
-            'foto.required' => 'Silahkan Masukan Foto',
-            'foto.mimes' => 'foto hanya di bolehkan berekstensi JPEG, JPG, PNG, dan GIF'
+            'foto.required' => 'Silakan masukkan foto',
+            'foto.mimes' => 'Foto hanya boleh JPEG, JPG, PNG, GIF'
         ]);
 
+        // Upload foto
         $foto_file = $request->file('foto');
-        $foto_ekstensi = $foto_file->extension();
-        $foto_nama = date('ymdhis') . "." . $foto_ekstensi;
+        $foto_nama = date('ymdhis') . "." . $foto_file->extension();
         $foto_file->move(public_path('foto'), $foto_nama);
 
+        // Gunakan user yang sedang login
+        $user = Auth::user();
+
+        // Simpan data siswa
         $data = [
-            'nomer_induk' => $request->input('nomer_induk'),
-            'nama' => $request->input('nama'),
-            'alamat' => $request->input('alamat'),
-            'kelas' => $request->input('kelas'),
+            'user_id' => $user->id,
+            'nomer_induk' => $request->nomer_induk,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'kelas' => $request->kelas,
             'foto' => $foto_nama
         ];
-        siswa::create($data);
-        return redirect('siswa')->with('success', 'Berhasil memasukan data');
 
+        Siswa::create($data);
+
+        return redirect('siswa')->with('success', 'Data siswa berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $data = siswa::where('nomer_induk', $id)->first();
+        $data = Siswa::where('nomer_induk', $id)->first();
         return view('siswa/show')->with('data', $data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $data = Siswa::where('nomer_induk', $id)->first();
         return view('siswa/edit')->with('data', $data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $request->validate([
             'nama' => 'required',
             'alamat' => 'required'
         ], [
-
-            'nomer_induk.numeric' => 'Nomer Induk Wajib diisi Dalam Angka',
-            'nama.required' => 'Nama Wajib diisi',
-            'alamat.required' => 'Alamat Wajib diisi',
+            'nama.required' => 'Nama wajib diisi',
+            'alamat.required' => 'Alamat wajib diisi',
         ]);
 
         $data = [
-            'nama' => $request->input('nama'),
-            'kelas' => $request->input('kelas'),
-            'alamat' => $request->input('alamat'),
+            'nama' => $request->nama,
+            'kelas' => $request->kelas,
+            'alamat' => $request->alamat,
         ];
 
         if ($request->hasFile('foto')) {
             $request->validate([
                 'foto' => 'mimes:jpeg,jpg,png,gif'
             ], [
-                'foto.mimes' => 'foto hanya di bolehkan berekstensi JPEG, JPG, PNG, dan GIF'
+                'foto.mimes' => 'Foto hanya diperbolehkan JPEG, JPG, PNG, dan GIF'
             ]);
+
             $foto_file = $request->file('foto');
-            $foto_ekstensi = $foto_file->extension();
-            $foto_nama = date('ymdhis') . "." . $foto_ekstensi;
+            $foto_nama = date('ymdhis') . "." . $foto_file->extension();
             $foto_file->move(public_path('foto'), $foto_nama);
 
-            $data_foto = siswa::where('nomer_induk', $id)->first();
+            $data_foto = Siswa::where('nomer_induk', $id)->first();
             File::delete(public_path('foto') . '/' . $data_foto->foto);
-
-            // $data = [
-            //     'foto' => $foto_nama
-            // ];
 
             $data['foto'] = $foto_nama;
         }
-        siswa::where('nomer_induk', $id)->update($data);
-        return redirect('/siswa')->with('success', 'Berhasil Melakukan Update Data');
+
+        Siswa::where('nomer_induk', $id)->update($data);
+        return redirect('/siswa')->with('success', 'Berhasil memperbarui data');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $data = siswa::where('nomer_induk', $id)->first();
+        $data = Siswa::where('nomer_induk', $id)->first();
         File::delete(public_path('foto') . '/' . $data->foto);
-        siswa::where('nomer_induk', $id)->delete();
-        return redirect('/siswa')->with('success', 'Berhasil Hapus Data');
+        Siswa::where('nomer_induk', $id)->delete();
+        return redirect('/siswa')->with('success', 'Data berhasil dihapus');
     }
+
     public function detail($id)
-{
-    try {
+    {
         $data = Siswa::find($id);
-        
+
         if (!$data) {
             return redirect('/siswa')->with('error', 'Data siswa tidak ditemukan');
         }
-        
+
         return view('siswa.show', compact('data'));
-    } catch (\Exception $e) {
-        return redirect('/siswa')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
     }
-}
 }

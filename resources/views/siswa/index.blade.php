@@ -52,7 +52,7 @@
                                 <td class="text-start">{{ $item->alamat }}</td>
                                 <td class="text-uppercase">{{ $item->kelas }}</td> {{-- Tambahkan ini --}}
                                 <td>
-                                    <a href="{{ url('/siswa', $item->nomer_induk) }}" class="btn btn-sm btn-info text-white">
+                                    <a href="{{ url('/siswa', $item->user_id) }}" class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye"></i> Detail
                                     </a>
                                     @if(auth()->user()->role === 'admin')
@@ -92,9 +92,11 @@
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <!-- Tombol Cetak PDF -->
-        <a href="{{ route('siswa.pdf', ['kelas' => request('kelas')]) }}" class="btn btn-danger" target="_blank">
-            Cetak PDF Kelas {{ request('kelas') ?? 'Semua' }}
-        </a>
+       @if(Auth::user()->role == 'admin')
+    <a href="{{ route('siswa.pdf', ['kelas' => request('kelas')]) }}" class="btn btn-danger">Cetak PDF</a>
+@endif
+
+
 
         <!-- Pagination -->
         <div>
@@ -102,9 +104,7 @@
         </div>
     </div>
 
-
-
-
+@if(Auth::user()->role == 'admin')
     <!-- Pie Chart -->
     <div class="container mt-5">
         <div class="row">
@@ -148,13 +148,21 @@
     </div>
 
 
+
+@endif
+
+
+    
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Chart Rendering -->
     <script>
-        const labels = {!! json_encode($labels) !!};
-        const data = {!! json_encode($jumlah->map(fn($j) => round($j))) !!};
+         const labels = {!! json_encode($labels) !!};
+    const data = {!! json_encode($jumlah->map(fn($j) => round($j))) !!};
+    console.log("Labels:", {!! json_encode($labels) !!});
+    console.log("Data:", {!! json_encode($jumlah->map(fn($j) => round($j))) !!});
+
 
         const backgroundColors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'];
         const hoverColors = ['#2e59d9', '#17a673', '#2c9faf', '#dda20a'];

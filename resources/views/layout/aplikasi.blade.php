@@ -97,10 +97,19 @@
              <!-- Nav Item - Tables -->
 
 
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+            <li class="nav-item">
+                <a class="nav-link" href="/siswa">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a> -->
+                    <span>Dashboard</span></a>
+            <li class="nav-item">
+    <a class="nav-link" href="{{ route('pengumuman.index') }}">
+        <i class="fas fa-fw fa-calendar-alt"></i>
+        <span>Pengumuman</span>
+    </a>
+</li>
+
+
+
 
             <!-- Nav Item - Charts -->
             @if(auth()->user()->role === 'admin')
@@ -121,9 +130,10 @@
             <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            <div class="d-flex justify-content-center d-none d-md-flex">
+    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+</div>
+
 
 
 
@@ -227,12 +237,14 @@
 
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">7</span>
-                            </a>
+    <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-envelope fa-fw"></i>
+        @if(session('new_user_info'))
+            <span class="badge badge-danger badge-counter">1</span>
+        @endif
+    </a>
+
 
 
 
@@ -242,8 +254,21 @@
                                 <h6 class="dropdown-header">
                                     Message Center
                                 </h6>
+                                @php
+    $userInfo = session('new_user_info');
+@endphp
+
+@if ($userInfo)
+    <a class="dropdown-item d-flex align-items-center" href="#">
+        <div class="font-weight-bold">
+            <div class="text-truncate">{{ $userInfo['message'] }}</div>
+            <div class="small text-gray-500">Email: {{ $userInfo['email'] }} | Password: {{ $userInfo['password'] }}</div>
+        </div>
+    </a>
+@endif
 
 
+                                
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                             </div>
                         </li>

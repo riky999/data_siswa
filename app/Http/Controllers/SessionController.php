@@ -54,41 +54,51 @@ class SessionController extends Controller
         return view('sesi/register');
     }
     function create(Request $request)
-    {
-        Session::flash('name', $request->name);
-        Session::flash('email', $request->email);
+{
+    Session::flash('name', $request->name);
+    Session::flash('email', $request->email);
 
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
-        ], [
-            'name.required' => 'Name Wajib diisi',
-            'email.required' => 'Email Wajib diisi',
-            'email.email' => 'Silahkan Masukan Email Yang valid',
-            'email.unique' => 'Email Sudah Pernah di gunakan silahkan pilih email yang lain',
-            'password.required' => 'Password Wajib diisi',
-            'password.min' => 'Minimum Password yang di izinkan adalah 6 karakter',
-        ]);
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6'
+    ], [
+        'name.required' => 'Name Wajib diisi',
+        'email.required' => 'Email Wajib diisi',
+        'email.email' => 'Silahkan Masukan Email Yang valid',
+        'email.unique' => 'Email Sudah Pernah digunakan, silahkan pilih email lain',
+        'password.required' => 'Password Wajib diisi',
+        'password.min' => 'Minimum Password adalah 6 karakter',
+    ]);
 
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ];
-        User::create($data);
+    $data = [
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'user' // tambahkan role user
+    ];
 
-        $infologin = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
-        if (Auth::attempt($infologin)) {
-            return redirect('siswa')->with('success', Auth::user()->name . 'Berhasil Login');
+    User::create($data);
+
+    $infologin = [
+        'email' => $request->email,
+        'password' => $request->password
+    ];
+
+    if (Auth::attempt($infologin)) {
+        // 🔁 Cek apakah user sudah punya data siswa
+        $user = Auth::user();
+        $sudahPunyaSiswa = \App\Models\Siswa::where('user_id', $user->id)->exists();
+
+        if (!$sudahPunyaSiswa) {
+            return redirect()->route('siswa.create')->with('success', 'Silahkan lengkapi data siswa Anda');
         } else {
-            return redirect('sesi')->withErrors('Username dan password yang dimasukkan tidak valid');
-
+            return redirect()->route('siswa.index');
         }
+    } else {
+        return redirect('sesi')->withErrors('Login gagal setelah register');
     }
+}
 
 }
 
