@@ -222,7 +222,7 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
+                                <span class="badge badge-danger badge-counter">0</span>
                             </a>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -248,28 +248,35 @@
 
 
 
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="messagesDropdown">
-                                <h6 class="dropdown-header">
-                                    Message Center
-                                </h6>
-                                @php
-    $userInfo = session('new_user_info');
-@endphp
+<!-- Dropdown - Messages -->
+<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+    aria-labelledby="messagesDropdown">
+    <h6 class="dropdown-header">
+        Message Center
+    </h6>
 
-@if ($userInfo)
-    <a class="dropdown-item d-flex align-items-center" href="#">
-        <div class="font-weight-bold">
-            <div class="text-truncate">{{ $userInfo['message'] }}</div>
-            <div class="small text-gray-500">Email: {{ $userInfo['email'] }} | Password: {{ $userInfo['password'] }}</div>
-        </div>
-    </a>
-@endif
+    @php
+        $userInfo = session('new_user_info');
+    @endphp
 
+    @if ($userInfo)
+        <a class="dropdown-item d-flex align-items-center" href="#">
+            <div class="dropdown-list-image mr-3">
+                <img class="rounded-circle" src="{{ asset('img/undraw_profile.svg') }}" alt="">
+            </div>
+            <div class="font-weight-bold">
+                <div class="text-truncate">{{ $userInfo['message'] }}</div>
+                <div class="small text-gray-500">Email: <span class="text-primary">{{ $userInfo['email'] }}</span> | 
+                    Password: <span class="text-danger">{{ $userInfo['password'] }}</span></div>
+            </div>
+        </a>
+    @else
+
+    @endif
+<!-- <div class="dropdown-item text-center small text-gray-500">Tidak ada pesan baru</div> -->
 
                                 
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Tidak ada pesan baru</a>
                             </div>
                         </li>
 

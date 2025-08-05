@@ -2,6 +2,8 @@
 
 @section('konten')
 
+
+
     <!-- buat userrr -->
     <div class="mt-3 mb-4">
         <div class="alert alert-primary shadow-sm border-left-primary">

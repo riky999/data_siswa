@@ -10,6 +10,7 @@ use PDF;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
+use Str;
 
 class SiswaController extends Controller
 {
@@ -124,23 +125,72 @@ public function store(Request $request)
     $foto_nama = date('ymdhis') . "." . $foto_file->extension();
     $foto_file->move(public_path('foto'), $foto_nama);
 
-    $user = Auth::user();
+    $login_user = Auth::user();
+    $akun_info = null; // gawe nampung info email ,password siswa jika di buat oleh admin
 
-    // Jika user adalah 'user', simpan user_id miliknya
-    // Jika admin, bisa simpan kosong atau sesuai kebutuhan
-    $data = [
-        'user_id' => $user->role === 'user' ? $user->id : null,
+    if ($login_user->role === 'admin') {
+    // Ubah nama jadi format email-friendly
+    $nama_slug = strtolower(str_replace(' ', '', $request->nama));
+    $email_siswa = $nama_slug . '@gmail.com';
+
+    // Generate password random (6 karakter)
+    $default_password = Str::random(6);
+
+    // Buat akun user baru untuk siswa
+    $user_siswa = \App\Models\User::create([
+        'name' => $request->nama,
+        'email' => $email_siswa,
+        'password' => bcrypt($default_password),
+        'role' => 'user',
+    ]);
+
+    $user_id = $user_siswa->id;
+
+    // Simpan info untuk notifikasi
+    $akun_info = [
+        'email' => $email_siswa,
+        'password' => $default_password
+    ];
+        $user_id = $user_siswa->id;
+
+        // Simpan info akun yang dibuat
+        $akun_info = [
+            'email' => $email_siswa,
+            'password' => $default_password
+        ];
+    } else {
+        // user hanya bisa 1 kaliiiiii
+        $user_id = $login_user->id;
+
+        if (Siswa::where('user_id', $user_id)->exists()) {
+            return redirect()->route('siswa.index')->with('warning', 'Anda sudah mengisi data sebelumnya.');
+        }
+    }
+
+    // Simpan data siswa
+    Siswa::create([
+        'user_id' => $user_id,
         'nomer_induk' => $request->nomer_induk,
         'nama' => $request->nama,
         'alamat' => $request->alamat,
         'kelas' => $request->kelas,
         'foto' => $foto_nama
-    ];
+    ]);
 
-    Siswa::create($data);
+    // Redirect dengan notifikasi
+    // Kirim notifikasi ke session (hanya jika admin buat akun)
+if ($akun_info) {
+    session()->flash('new_user_info', [
+        'message' => 'Akun siswa berhasil dibuat otomatis!',
+        'email' => $akun_info['email'],
+        'password' => $akun_info['password'],
+    ]);
+}
 
     return redirect('siswa')->with('success', 'Data siswa berhasil ditambahkan.');
 }
+
+
 
     public function show(string $id)
     {
