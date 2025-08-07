@@ -8,10 +8,10 @@ class Siswa extends Model
 {
     protected $table = "siswa";
 
-    protected $primaryKey = 'user_id'; // 👉 Laravel akan pakai user_id, bukan id
+    protected $primaryKey = 'user_id';
 
-    public $incrementing = false;      // 👉 Karena user_id biasanya bukan auto-increment
-    protected $keyType = 'int';        // 👉 Ganti ke 'string' kalau user_id berupa string
+    public $incrementing = false;      
+    protected $keyType = 'int';     
 
     protected $fillable = [
         'user_id',

@@ -1,0 +1,418 @@
+/* ========== CSS DARK THEME - BAHASA INDONESIA ========== */
+
+/* Variabel CSS untuk tema terang (warna asli tidak diubah) */
+:root {
+    /* Warna tema terang - TETAP SEPERTI ASLINYA */
+    --bg-color: inherit; /* Biarkan background asli */
+    --card-bg: inherit; /* Biarkan card background asli */
+    --text-color: inherit; /* Biarkan text color asli */
+    --text-primary: inherit; /* Biarkan text primary asli */
+    --border-color: inherit; /* Biarkan border asli */
+    --sidebar-bg: inherit; /* Biarkan sidebar asli */
+    --sidebar-text: inherit; /* Biarkan sidebar text asli */
+    --topbar-bg: inherit; /* Biarkan topbar asli */
+    --shadow: inherit; /* Biarkan shadow asli */
+    --table-bg: inherit; /* Biarkan table background asli */
+    --table-header-bg: inherit; /* Biarkan table header asli */
+    --table-row-hover: inherit; /* Biarkan hover asli */
+}
+
+/* Variabel CSS untuk tema gelap */
+[data-theme="dark"] {
+    /* Warna tema gelap - Kombinasi Navy Blue & Dark Gray */
+    --bg-color: #0f1419; /* Background utama navy gelap */
+    --card-bg: #1e293b; /* Background card slate gelap */
+    --text-color: #cbd5e1; /* Warna text slate terang */
+    --text-primary: #f1f5f9; /* Warna text putih lembut */
+    --border-color: #334155; /* Warna border slate */
+    --sidebar-bg: linear-gradient(180deg, #1e3a8a 10%, #1e293b 100%); /* Gradient sidebar biru-slate */
+    --sidebar-text: #f8fafc; /* Text sidebar putih bersih */
+    --topbar-bg: #1e293b; /* Background topbar slate */
+    --shadow: 0 0.15rem 1.75rem 0 rgba(15, 20, 25, 0.4); /* Shadow navy */
+    --table-bg: #1e293b; /* Background table slate */
+    --table-header-bg: #334155; /* Background header table */
+    --table-row-hover: #334155; /* Hover row table */
+}
+
+/* ========== STYLING BODY DAN LAYOUT UTAMA ========== */
+
+/* Background body hanya untuk tema gelap */
+[data-theme="dark"] body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    transition: all 0.3s ease; /* Animasi transisi halus */
+}
+
+/* ========== STYLING CARD DAN KOMPONEN ========== */
+
+/* Styling card hanya untuk tema gelap */
+[data-theme="dark"] .card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow) !important;
+    transition: all 0.3s ease;
+}
+
+/* Header card tema gelap */
+[data-theme="dark"] .card-header {
+    background-color: var(--card-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Body card tema gelap */
+[data-theme="dark"] .card-body {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* ========== STYLING SIDEBAR ========== */
+
+/* Background sidebar tema gelap */
+[data-theme="dark"] .sidebar {
+    background: var(--sidebar-bg) !important;
+}
+
+/* Link navigasi sidebar */
+[data-theme="dark"] .sidebar .nav-item .nav-link {
+    color: var(--sidebar-text) !important;
+}
+
+/* Brand sidebar */
+[data-theme="dark"] .sidebar .sidebar-brand {
+    color: var(--sidebar-text) !important;
+}
+
+/* Garis pemisah sidebar */
+[data-theme="dark"] .sidebar-divider {
+    border-top-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ========== STYLING TOPBAR/NAVBAR ========== */
+
+/* Background topbar tema gelap */
+[data-theme="dark"] .topbar {
+    background-color: var(--topbar-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Link navbar tema gelap */
+[data-theme="dark"] .navbar-light .navbar-nav .nav-link {
+    color: var(--text-color) !important;
+}
+
+/* ========== STYLING TEXT DAN WARNA ========== */
+
+/* Warna text abu-abu tema gelap */
+[data-theme="dark"] .text-gray-600,
+[data-theme="dark"] .text-gray-800,
+[data-theme="dark"] .text-gray-900 {
+    color: var(--text-color) !important;
+}
+
+/* Warna text primary tetap biru */
+[data-theme="dark"] .text-primary {
+    color: #4e73df !important;
+}
+
+/* Background putih menjadi gelap */
+[data-theme="dark"] .bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+/* Background terang menjadi gelap */
+[data-theme="dark"] .bg-light {
+    background-color: var(--card-bg) !important;
+}
+
+/* ========== STYLING FORM DAN INPUT ========== */
+
+/* Input form tema gelap */
+[data-theme="dark"] .form-control {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Input form saat fokus */
+[data-theme="dark"] .form-control:focus {
+    background-color: var(--card-bg) !important;
+    border-color: #4e73df !important;
+    color: var(--text-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25) !important;
+}
+
+/* Select dropdown tema gelap */
+[data-theme="dark"] .form-select {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Text input group */
+[data-theme="dark"] .input-group-text {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* ========== STYLING DROPDOWN MENU ========== */
+
+/* Background dropdown tema gelap */
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Item dropdown */
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-color) !important;
+}
+
+/* Hover item dropdown */
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+    background-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Header dropdown */
+[data-theme="dark"] .dropdown-header {
+    color: var(--text-color) !important;
+}
+
+/* ========== STYLING TABLE/TABEL ========== */
+
+/* Background table tema gelap */
+[data-theme="dark"] .table {
+    background-color: var(--table-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* Header table */
+[data-theme="dark"] .table th {
+    background-color: var(--table-header-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Cell table */
+[data-theme="dark"] .table td {
+    background-color: var(--table-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Hover row table */
+[data-theme="dark"] .table-hover tbody tr:hover {
+    background-color: var(--table-row-hover) !important;
+}
+
+/* ========== STYLING ALERT DAN NOTIFIKASI ========== */
+
+/* Alert tema gelap */
+[data-theme="dark"] .alert {
+    border-color: var(--border-color) !important;
+}
+
+/* Alert info */
+[data-theme="dark"] .alert-info {
+    background-color: rgba(78, 115, 223, 0.1) !important;
+    color: #4e73df !important;
+}
+
+/* ========== STYLING MODAL/POPUP ========== */
+
+/* Content modal tema gelap */
+[data-theme="dark"] .modal-content {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Header modal */
+[data-theme="dark"] .modal-header {
+    border-bottom-color: var(--border-color) !important;
+    background-color: var(--card-bg) !important;
+}
+
+/* Body modal */
+[data-theme="dark"] .modal-body {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* Footer modal */
+[data-theme="dark"] .modal-footer {
+    border-top-color: var(--border-color) !important;
+    background-color: var(--card-bg) !important;
+}
+
+/* Title modal */
+[data-theme="dark"] .modal-title {
+    color: var(--text-primary) !important;
+}
+
+/* ========== STYLING FOOTER ========== */
+
+/* Footer tema gelap */
+[data-theme="dark"] footer {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* ========== STYLING AREA CONTENT ========== */
+
+/* Content wrapper */
+[data-theme="dark"] #content-wrapper {
+    background-color: var(--bg-color) !important;
+}
+
+/* Content utama */
+[data-theme="dark"] #content {
+    background-color: var(--bg-color) !important;
+}
+
+/* Container tetap transparan */
+[data-theme="dark"] .container,
+[data-theme="dark"] .container-fluid {
+    background-color: transparent !important;
+}
+
+/* ========== TOGGLE SWITCH TEMA ========== */
+
+/* Container toggle switch */
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+/* Toggle switch utama */
+.theme-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    margin: 0 10px;
+}
+
+/* Input checkbox tersembunyi */
+.theme-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Slider toggle - Navy Blue Theme */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #94a3b8; /* Slate 400 */
+    transition: .4s;
+    border-radius: 25px;
+}
+
+/* Bulatan slider */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 19px;
+    width: 19px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* Slider saat aktif - Menggunakan warna biru yang konsisten */
+input:checked + .slider {
+    background-color: #3b82f6; /* Blue 500 */
+}
+
+/* Bulatan slider saat aktif */
+input:checked + .slider:before {
+    transform: translateX(25px);
+}
+
+/* Icon matahari dan bulan */
+.theme-icon {
+    font-size: 14px;
+    margin: 0 5px;
+    color: var(--text-color);
+}
+
+/* ========== STYLING SIDEBAR COLLAPSE ========== */
+
+/* Inner collapse tema gelap */
+[data-theme="dark"] .collapse-inner {
+    background-color: var(--card-bg) !important;
+}
+
+/* Item collapse */
+[data-theme="dark"] .collapse-item {
+    color: var(--text-color) !important;
+}
+
+/* Hover item collapse */
+[data-theme="dark"] .collapse-item:hover {
+    background-color: var(--border-color) !important;
+}
+
+/* ========== STYLING BUTTON ========== */
+
+/* Button secondary tema gelap */
+[data-theme="dark"] .btn-secondary {
+    background-color: #495057 !important;
+    border-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+/* ========== STYLING PAGINATION ========== */
+
+/* Link pagination tema gelap */
+[data-theme="dark"] .page-link {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Pagination aktif */
+[data-theme="dark"] .page-item.active .page-link {
+    background-color: #4e73df !important;
+    border-color: #4e73df !important;
+}
+
+/* ========== STYLING SCROLLBAR ========== */
+
+/* Warna scrollbar tema gelap - Navy Blue Theme */
+[data-theme="dark"] * {
+    scrollbar-color: #334155 #1e293b;
+}
+
+/* Track scrollbar webkit */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* Background scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+/* Thumb scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+}
+
+/* Hover thumb scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}

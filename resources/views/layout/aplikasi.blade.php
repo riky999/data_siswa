@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset("template/css/sb-admin-2.min.css")}}" rel="stylesheet">
+    <link href="{{ asset('css/dark-theme.css') }}" rel="stylesheet">
 
 </head>
 
@@ -29,6 +30,8 @@
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -94,7 +97,7 @@
 
 
             </li>
-             <!-- Nav Item - Tables -->
+            <!-- Nav Item - Tables -->
 
 
             <li class="nav-item">
@@ -102,11 +105,11 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Dashboard</span></a>
             <li class="nav-item">
-    <a class="nav-link" href="{{ route('pengumuman.index') }}">
-        <i class="fas fa-fw fa-calendar-alt"></i>
-        <span>Pengumuman</span>
-    </a>
-</li>
+                <a class="nav-link" href="{{ route('pengumuman.index') }}">
+                    <i class="fas fa-fw fa-calendar-alt"></i>
+                    <span>Pengumuman</span>
+                </a>
+            </li>
 
 
 
@@ -120,7 +123,7 @@
                 </li>
             @endif
 
-            
+
 
 
 
@@ -131,8 +134,8 @@
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="d-flex justify-content-center d-none d-md-flex">
-    <button class="rounded-circle border-0" id="sidebarToggle"></button>
-</div>
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
 
 
 
@@ -216,6 +219,22 @@
                             </div>
                         </li>
 
+
+
+                        <li class="nav-item" style="margin-top: 22px; margin-left: auto;">
+                            <div class="theme-toggle-container"
+                                style="display: flex; align-items: center; gap: 3px; justify-content: center; font-size: 14px; transform: scale(0.7);">
+                                <i class="fas fa-sun theme-icon"></i>
+                                <label class="theme-toggle">
+                                    <input type="checkbox" id="themeToggle">
+                                    <span class="slider"></span>
+                                </label>
+                                <i class="fas fa-moon theme-icon"></i>
+                            </div>
+                        </li>
+
+
+
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
@@ -237,46 +256,48 @@
 
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
-    <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-envelope fa-fw"></i>
-        @if(session('new_user_info'))
-            <span class="badge badge-danger badge-counter">1</span>
-        @endif
-    </a>
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                @if(session('new_user_info'))
+                                    <span class="badge badge-danger badge-counter">1</span>
+                                @endif
+                            </a>
 
 
 
 
-<!-- Dropdown - Messages -->
-<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-    aria-labelledby="messagesDropdown">
-    <h6 class="dropdown-header">
-        Message Center
-    </h6>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
 
-    @php
-        $userInfo = session('new_user_info');
-    @endphp
+                                @php
+                                    $userInfo = session('new_user_info');
+                                @endphp
 
-    @if ($userInfo)
-        <a class="dropdown-item d-flex align-items-center" href="#">
-            <div class="dropdown-list-image mr-3">
-                <img class="rounded-circle" src="{{ asset('img/undraw_profile.svg') }}" alt="">
-            </div>
-            <div class="font-weight-bold">
-                <div class="text-truncate">{{ $userInfo['message'] }}</div>
-                <div class="small text-gray-500">Email: <span class="text-primary">{{ $userInfo['email'] }}</span> | 
-                    Password: <span class="text-danger">{{ $userInfo['password'] }}</span></div>
-            </div>
-        </a>
-    @else
+                                @if ($userInfo)
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="dropdown-list-image mr-3">
+                                            <img class="rounded-circle" src="{{ asset('img/undraw_profile.svg') }}" alt="">
+                                        </div>
+                                        <div class="font-weight-bold">
+                                            <div class="text-truncate">{{ $userInfo['message'] }}</div>
+                                            <div class="small text-gray-500">Email: <span
+                                                    class="text-primary">{{ $userInfo['email'] }}</span> |
+                                                Password: <span class="text-danger">{{ $userInfo['password'] }}</span></div>
+                                        </div>
+                                    </a>
+                                @else
 
-    @endif
-<!-- <div class="dropdown-item text-center small text-gray-500">Tidak ada pesan baru</div> -->
+                                @endif
+                                <!-- <div class="dropdown-item text-center small text-gray-500">Tidak ada pesan baru</div> -->
 
-                                
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Tidak ada pesan baru</a>
+
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Tidak ada pesan
+                                    baru</a>
                             </div>
                         </li>
 
@@ -358,18 +379,14 @@
 
                     <!-- Card Body -->
 
-                    
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <canvas id="myAreaChart"></canvas>
-                        </div>
-                    </div>
+
+
                 </div>
             </div>
 
 
-            
-            
+
+
 
 
             <footer class="bg-white text-white py-3 mt-auto shadow-sm">
@@ -428,6 +445,34 @@
             <!-- Page level custom scripts -->
             <script src="{{ asset(path: "template/demo/chart-area-demo.js")}}"></script>
             <script src="{{ asset("template/js/demo/chart-pie-demo.js")}}"></script>
+
+            <script>
+
+
+                // Dark theme functionality
+                const themeToggle = document.getElementById('themeToggle');
+                const body = document.body;
+
+                // Check for saved theme preference or default to light mode
+                const currentTheme = localStorage.getItem('theme') || 'light';
+
+                // Apply the saved theme
+                if (currentTheme === 'dark') {
+                    body.setAttribute('data-theme', 'dark');
+                    themeToggle.checked = true;
+                }
+
+                // Theme toggle event listener
+                themeToggle.addEventListener('change', function () {
+                    if (this.checked) {
+                        body.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        body.removeAttribute('data-theme');
+                        localStorage.setItem('theme', 'light');
+                    }
+                });
+            </script>
 
 </body>
 
