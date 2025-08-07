@@ -15,7 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role' // tambahkan role kalau belum ada di tabel
+        'role' 
     ];
 
     protected $hidden = [
@@ -31,7 +31,7 @@ class User extends Authenticatable
         ];
     }
 
-    // 👇 Tambahkan relasi ke Siswa
+    
     public function siswa()
     {
         return $this->hasOne(Siswa::class, 'user_id');

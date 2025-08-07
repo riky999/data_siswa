@@ -416,3 +416,4 @@ input:checked + .slider:before {
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
     background: #475569;
 }
+

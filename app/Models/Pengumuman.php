@@ -10,7 +10,7 @@ class Pengumuman extends Model
 {
     use HasFactory;
 
-    protected $table = 'pengumumen'; // Nama tabel di database
+    protected $table = 'pengumumen'; 
 
     protected $fillable = [
         'no',

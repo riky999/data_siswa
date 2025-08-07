@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    // database/migrations/xxxx_xx_xx_create_pengumumen_table.php
+
 
 public function up(): void
 {
